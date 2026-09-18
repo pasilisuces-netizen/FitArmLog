@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:FitArmLog.ViewModels"
+             xmlns:models="clr-namespace:FitArmLog.Models"
+             xmlns:ffimageloading="clr-namespace:FFImageLoading.Maui;assembly=FFImageLoading.Maui"
+             x:Class="FitArmLog.Views.ExerciseListPage"
+             x:DataType="vm:ExerciseListViewModel"
+             Title="Biblioteca de ejercicios">
+
+	<Grid RowDefinitions="Auto,Auto,*" Padding="10">
+
+		<Label Grid.Row="0"
+               Text="FitArmLog · Ejercicios"
+               FontSize="22"
+               FontAttributes="Bold"
+               Margin="0,0,0,10" />
+
+        <Label Grid.Row="1"
+            Text="{Binding ErrorMessage}"
+            TextColor="Red"
+        Margin="0,0,0,10" />
+
+        <RefreshView Grid.Row="2"
+                     IsRefreshing="{Binding IsBusy}"
+                     Command="{Binding LoadExercisesCommand}">
+
+			<CollectionView ItemsSource="{Binding Exercises}">
+				<CollectionView.ItemTemplate>
+					<DataTemplate x:DataType="models:Exercise">
+						<Grid Padding="10" ColumnDefinitions="90,*">
+							<Frame BorderColor="LightGray" CornerRadius="8" Padding="10"
+                                   Grid.ColumnSpan="2">
+								<Grid ColumnDefinitions="90,*">
+								
+									<ffimageloading:CachedImage
+                                        Grid.Column="0"
+                                        Source="{Binding ImageUrl}"
+                                        WidthRequest="80"
+                                        HeightRequest="80"
+                                        Aspect="AspectFill"
+                                        DownsampleToViewSize="true"
+                                        CacheDuration="30" />
+
+									<VerticalStackLayout Grid.Column="1" Spacing="4" Margin="10,0,0,0">
+										<Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold" />
+										<Label Text="{Binding MuscleGroup}" FontSize="13" TextColor="Gray" />
+										<Label Text="{Binding Description}" FontSize="11" MaxLines="2" />
+									</VerticalStackLayout>
+								</Grid>
+							</Frame>
+						</Grid>
+					</DataTemplate>
+				</CollectionView.ItemTemplate>
+			</CollectionView>
+		</RefreshView>
+
+	</Grid>
+</ContentPage>
