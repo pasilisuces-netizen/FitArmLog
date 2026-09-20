@@ -31,7 +31,12 @@
 						<Grid Padding="10" ColumnDefinitions="90,*">
 							<Frame BorderColor="LightGray" CornerRadius="8" Padding="10"
                                    Grid.ColumnSpan="2">
-								<Grid ColumnDefinitions="90,*">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ExerciseListViewModel}}, Path=GoToDetailCommand}"
+                                    CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
+                                <Grid ColumnDefinitions="90,*">
 								
 									<ffimageloading:CachedImage
                                         Grid.Column="0"

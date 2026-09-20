@@ -1,4 +1,5 @@
-﻿using FFImageLoading.Maui;
+﻿using CommunityToolkit.Maui;
+using FFImageLoading.Maui;
 using FitArmLog.Services;
 using FitArmLog.ViewModels;
 using FitArmLog.Views;
@@ -14,6 +15,7 @@ public static class MauiProgram
         builder
             .UseMauiApp<App>()
             .UseFFImageLoading()
+            .UseMauiCommunityToolkit()   
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -22,9 +24,12 @@ public static class MauiProgram
 
         builder.Services.AddSingleton<HttpClient>();
         builder.Services.AddSingleton<IExerciseApiService, ExerciseApiService>();
+        builder.Services.AddSingleton<INavigationService, NavigationService>();
 
         builder.Services.AddTransient<ExerciseListViewModel>();
         builder.Services.AddTransient<ExerciseListPage>();
+        builder.Services.AddTransient<ExerciseDetailViewModel>();
+        builder.Services.AddTransient<ExerciseDetailPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();

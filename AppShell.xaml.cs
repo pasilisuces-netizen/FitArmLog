@@ -1,10 +1,12 @@
-﻿namespace FitArmLog
+﻿using FitArmLog.Views;
+
+namespace FitArmLog;
+
+public partial class AppShell : Shell
 {
-    public partial class AppShell : Shell
+    public AppShell()
     {
-        public AppShell()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+        Routing.RegisterRoute(nameof(ExerciseDetailPage), typeof(ExerciseDetailPage));
     }
 }
