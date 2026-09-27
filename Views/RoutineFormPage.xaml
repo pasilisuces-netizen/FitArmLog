@@ -6,7 +6,7 @@
              x:DataType="vm:RoutineFormViewModel"
              Title="Nueva rutina">
 
-    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Padding="16" RowSpacing="8">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*,Auto" Padding="16" RowSpacing="8">
 
         <Label Grid.Row="0" Text="Nombre de la rutina" FontAttributes="Bold" />
 
@@ -14,9 +14,18 @@
                Text="{Binding RoutineName, Mode=TwoWay}"
                Placeholder="Ej: Día de pierna" />
 
-        <Label Grid.Row="2" Text="{Binding ErrorMessage}" TextColor="Red" FontSize="13" />
+        <Label Grid.Row="2"
+               Text="{Binding ErrorMessage}"
+               TextColor="Red"
+               FontSize="13" />
 
-        <RefreshView Grid.Row="3" IsRefreshing="{Binding IsBusy}" Command="{Binding LoadExercisesCommand}">
+        <Label Grid.Row="3"
+               Text="{Binding SuccessMessage}"
+               TextColor="Green"
+               FontAttributes="Bold"
+               FontSize="13" />
+
+        <RefreshView Grid.Row="4" IsRefreshing="{Binding IsBusy}" Command="{Binding LoadExercisesCommand}">
             <CollectionView ItemsSource="{Binding AvailableExercises}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="vm:SelectableExercise">
@@ -32,7 +41,11 @@
             </CollectionView>
         </RefreshView>
 
-        <Button Grid.Row="4" Text="Guardar rutina" Command="{Binding SaveCommand}" Margin="0,10,0,0" />
+        <Button Grid.Row="5"
+                Text="Guardar rutina"
+                Command="{Binding SaveCommand}"
+                IsEnabled="{Binding IsNotBusy}"
+                Margin="0,10,0,0" />
 
     </Grid>
 </ContentPage>

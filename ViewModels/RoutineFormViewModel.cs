@@ -4,7 +4,6 @@ using FitArmLog.Models;
 using FitArmLog.Services;
 using System.Collections.ObjectModel;
 
-
 namespace FitArmLog.ViewModels;
 
 public partial class RoutineFormViewModel : ObservableObject
@@ -19,11 +18,18 @@ public partial class RoutineFormViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<SelectableExercise> availableExercises = new();
 
+    
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsNotBusy))]
     private bool isBusy;
+
+    public bool IsNotBusy => !IsBusy;
 
     [ObservableProperty]
     private string errorMessage = string.Empty;
+
+    [ObservableProperty]
+    private string successMessage = string.Empty;
 
     public RoutineFormViewModel(
         IExerciseApiService apiService,
@@ -58,8 +64,9 @@ public partial class RoutineFormViewModel : ObservableObject
     private async Task SaveAsync()
     {
         ErrorMessage = string.Empty;
+        SuccessMessage = string.Empty;
 
-        // Validación 1: el nombre de la rutina es obligatorio.
+        
         if (string.IsNullOrWhiteSpace(RoutineName))
         {
             ErrorMessage = "Ingresá un nombre para la rutina.";
@@ -71,21 +78,47 @@ public partial class RoutineFormViewModel : ObservableObject
             .Select(e => e.Exercise)
             .ToList();
 
-        // Validación 2: tiene que haber al menos un ejercicio elegido.
+        
         if (selected.Count == 0)
         {
             ErrorMessage = "Seleccioná al menos un ejercicio.";
             return;
         }
 
-        var routine = new Routine
+        try
         {
-            Name = RoutineName.Trim(),
-            Exercises = selected
-        };
+           
+            IsBusy = true;
 
-        await _routineRepository.AddAsync(routine);
-        await NotificationHelper.ShowToastAsync($"Rutina '{routine.Name}' creada con {selected.Count} ejercicios.");
-        await _navigationService.GoBackAsync();
+            System.Diagnostics.Debug.WriteLine("[RoutineForm] Guardando rutina...");
+
+            var routine = new Routine
+            {
+                Name = RoutineName.Trim(),
+                Exercises = selected
+            };
+
+            await _routineRepository.AddAsync(routine);
+            System.Diagnostics.Debug.WriteLine("[RoutineForm] Rutina agregada al repositorio.");
+
+            SuccessMessage = $"¡Rutina '{routine.Name}' guardada!";
+
+           
+            await NotificationHelper.ShowToastAsync(SuccessMessage);
+
+            await Task.Delay(600); 
+            await _navigationService.GoBackAsync();
+
+            System.Diagnostics.Debug.WriteLine("[RoutineForm] Navegación completada.");
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"No se pudo guardar la rutina: {ex.Message}";
+            System.Diagnostics.Debug.WriteLine($"[RoutineForm] ERROR: {ex}");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 }
