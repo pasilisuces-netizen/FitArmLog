@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:FitArmLog.ViewModels"
+             x:Class="FitArmLog.Views.RoutineFormPage"
+             x:DataType="vm:RoutineFormViewModel"
+             Title="Nueva rutina">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Padding="16" RowSpacing="8">
+
+        <Label Grid.Row="0" Text="Nombre de la rutina" FontAttributes="Bold" />
+
+        <Entry Grid.Row="1"
+               Text="{Binding RoutineName, Mode=TwoWay}"
+               Placeholder="Ej: Día de pierna" />
+
+        <Label Grid.Row="2" Text="{Binding ErrorMessage}" TextColor="Red" FontSize="13" />
+
+        <RefreshView Grid.Row="3" IsRefreshing="{Binding IsBusy}" Command="{Binding LoadExercisesCommand}">
+            <CollectionView ItemsSource="{Binding AvailableExercises}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:SelectableExercise">
+                        <Grid Padding="8" ColumnDefinitions="Auto,*">
+                            <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" />
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                <Label Text="{Binding Exercise.Name}" FontAttributes="Bold" />
+                                <Label Text="{Binding Exercise.MuscleGroup}" FontSize="12" TextColor="Gray" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <Button Grid.Row="4" Text="Guardar rutina" Command="{Binding SaveCommand}" Margin="0,10,0,0" />
+
+    </Grid>
+</ContentPage>

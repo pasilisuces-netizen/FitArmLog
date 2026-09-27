@@ -30,6 +30,14 @@ public static class MauiProgram
         builder.Services.AddTransient<ExerciseListPage>();
         builder.Services.AddTransient<ExerciseDetailViewModel>();
         builder.Services.AddTransient<ExerciseDetailPage>();
+        builder.Services.AddSingleton<IRoutineRepository, InMemoryRoutineRepository>();
+
+        builder.Services.AddTransient<RoutineListViewModel>();
+        builder.Services.AddTransient<RoutineListPage>();
+        builder.Services.AddTransient<RoutineFormViewModel>();
+        builder.Services.AddTransient<RoutineFormPage>();
+        builder.Services.AddTransient<RoutineDetailViewModel>();
+        builder.Services.AddTransient<RoutineDetailPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();

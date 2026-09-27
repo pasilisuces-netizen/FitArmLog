@@ -4,9 +4,14 @@
        xmlns:views="clr-namespace:FitArmLog.Views"
        x:Class="FitArmLog.AppShell">
 
-    <ShellContent
-        Title="Ejercicios"
-        ContentTemplate="{DataTemplate views:ExerciseListPage}"
-        Route="ExerciseListPage" />
+    <TabBar>
+        <ShellContent Title="Ejercicios"
+                      ContentTemplate="{DataTemplate views:ExerciseListPage}"
+                      Route="ExerciseListPage" />
+
+        <ShellContent Title="Rutinas"
+                      ContentTemplate="{DataTemplate views:RoutineListPage}"
+                      Route="RoutineListPage" />
+    </TabBar>
 
 </Shell>

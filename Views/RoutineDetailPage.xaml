@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:FitArmLog.ViewModels"
+             xmlns:models="clr-namespace:FitArmLog.Models"
+             x:Class="FitArmLog.Views.RoutineDetailPage"
+             x:DataType="vm:RoutineDetailViewModel"
+             Title="Detalle de rutina">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="10">
+
+            <Label Text="{Binding Routine.Name}" FontSize="24" FontAttributes="Bold" />
+            <Label Text="{Binding Routine.Exercises.Count, StringFormat='{0} ejercicios'}" TextColor="Gray" />
+
+            <CollectionView ItemsSource="{Binding Routine.Exercises}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Exercise">
+                        <Frame Padding="10" Margin="0,4" BorderColor="LightGray" CornerRadius="6">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Name}" FontAttributes="Bold" />
+                                <Label Text="{Binding MuscleGroup}" FontSize="12" TextColor="Gray" />
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Button Text="Volver" Command="{Binding GoBackCommand}" Margin="0,10,0,0" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
