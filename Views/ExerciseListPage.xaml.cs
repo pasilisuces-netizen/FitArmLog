@@ -13,9 +13,9 @@ public partial class ExerciseListPage : ContentPage
         BindingContext = viewModel;
     }
 
-     protected override async void OnAppearing()
+    protected override void OnAppearing()
     {
         base.OnAppearing();
-        await _viewModel.LoadExercisesCommand.ExecuteAsync(null);
+        _viewModel.LoadExercisesCommand.Execute(null);
     }
 }

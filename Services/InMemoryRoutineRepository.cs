@@ -2,8 +2,7 @@
 
 namespace FitArmLog.Services;
 
-// Implementación EN MEMORIA: los datos viven mientras la app está abierta
-// y se pierden al cerrarla. 
+
 public class InMemoryRoutineRepository : IRoutineRepository
 {
     private readonly List<Routine> _routines = new();

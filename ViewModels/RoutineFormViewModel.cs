@@ -66,7 +66,6 @@ public partial class RoutineFormViewModel : ObservableObject
         ErrorMessage = string.Empty;
         SuccessMessage = string.Empty;
 
-        
         if (string.IsNullOrWhiteSpace(RoutineName))
         {
             ErrorMessage = "Ingresá un nombre para la rutina.";
@@ -78,7 +77,6 @@ public partial class RoutineFormViewModel : ObservableObject
             .Select(e => e.Exercise)
             .ToList();
 
-        
         if (selected.Count == 0)
         {
             ErrorMessage = "Seleccioná al menos un ejercicio.";
@@ -87,11 +85,6 @@ public partial class RoutineFormViewModel : ObservableObject
 
         try
         {
-           
-            IsBusy = true;
-
-            System.Diagnostics.Debug.WriteLine("[RoutineForm] Guardando rutina...");
-
             var routine = new Routine
             {
                 Name = RoutineName.Trim(),
@@ -99,26 +92,20 @@ public partial class RoutineFormViewModel : ObservableObject
             };
 
             await _routineRepository.AddAsync(routine);
-            System.Diagnostics.Debug.WriteLine("[RoutineForm] Rutina agregada al repositorio.");
 
             SuccessMessage = $"¡Rutina '{routine.Name}' guardada!";
-
-           
             await NotificationHelper.ShowToastAsync(SuccessMessage);
 
-            await Task.Delay(600); 
-            await _navigationService.GoBackAsync();
-
-            System.Diagnostics.Debug.WriteLine("[RoutineForm] Navegación completada.");
+            
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                await _navigationService.GoBackAsync();
+            });
         }
         catch (Exception ex)
         {
             ErrorMessage = $"No se pudo guardar la rutina: {ex.Message}";
             System.Diagnostics.Debug.WriteLine($"[RoutineForm] ERROR: {ex}");
-        }
-        finally
-        {
-            IsBusy = false;
         }
     }
 }

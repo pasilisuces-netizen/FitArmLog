@@ -13,9 +13,11 @@ public partial class RoutineListPage : ContentPage
         BindingContext = viewModel;
     }
 
-    protected override async void OnAppearing()
+    protected override void OnAppearing()
     {
         base.OnAppearing();
-        await _viewModel.LoadRoutinesCommand.ExecuteAsync(null);
+
+        
+        _viewModel.LoadRoutinesCommand.Execute(null);
     }
 }

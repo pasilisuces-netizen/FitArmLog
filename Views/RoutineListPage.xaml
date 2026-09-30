@@ -23,29 +23,31 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Routine">
-                    <SwipeView>
-                        <SwipeView.RightItems>
-                            <SwipeItems>
-                                <SwipeItem Text="Eliminar"
-                                           BackgroundColor="IndianRed"
-                                           Command="{Binding Source={RelativeSource AncestorType={x:Type vm:RoutineListViewModel}}, Path=DeleteRoutineCommand}"
-                                           CommandParameter="{Binding .}" />
-                            </SwipeItems>
-                        </SwipeView.RightItems>
+                   
+                    <Grid Padding="12" Margin="10,6" ColumnDefinitions="*,Auto"
+                          BackgroundColor="{AppThemeBinding Light=White, Dark=#1e1e1e}">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:RoutineListViewModel}}, Path=GoToDetailCommand}"
+                                CommandParameter="{Binding .}" />
+                        </Grid.GestureRecognizers>
 
-                        <Frame Padding="12" Margin="10,6" BorderColor="LightGray" CornerRadius="8">
-                            <Frame.GestureRecognizers>
-                                <TapGestureRecognizer
-                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:RoutineListViewModel}}, Path=GoToDetailCommand}"
-                                    CommandParameter="{Binding .}" />
-                            </Frame.GestureRecognizers>
-                            <VerticalStackLayout Spacing="4">
-                                <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
-                                <Label Text="{Binding Exercises.Count, StringFormat='{0} ejercicios'}"
-                                       FontSize="13" TextColor="Gray" />
-                            </VerticalStackLayout>
-                        </Frame>
-                    </SwipeView>
+                        <VerticalStackLayout Grid.Column="0" Spacing="4" VerticalOptions="Center">
+                            <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
+                            <Label Text="{Binding Exercises.Count, StringFormat='{0} ejercicios'}"
+                                   FontSize="13" TextColor="Gray" />
+                        </VerticalStackLayout>
+
+                        <Button Grid.Column="1"
+                                Text="Eliminar"
+                                TextColor="White"
+                                BackgroundColor="IndianRed"
+                                FontSize="12"
+                                Padding="10,4"
+                                VerticalOptions="Center"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:RoutineListViewModel}}, Path=DeleteRoutineCommand}"
+                                CommandParameter="{Binding .}" />
+                    </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
