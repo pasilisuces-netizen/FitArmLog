@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FitArmLog.Models;
@@ -22,6 +21,11 @@ public partial class ExerciseListViewModel : ObservableObject
     [ObservableProperty]
     private string errorMessage = string.Empty;
 
+    // Mensaje de estado (distinto del error): informa qué está pasando
+    // durante la carga, sin ser necesariamente un problema.
+    [ObservableProperty]
+    private string statusMessage = string.Empty;
+
     public ExerciseListViewModel(IExerciseApiService apiService, INavigationService navigationService)
     {
         _apiService = apiService;
@@ -33,29 +37,31 @@ public partial class ExerciseListViewModel : ObservableObject
     {
         IsBusy = true;
         ErrorMessage = string.Empty;
+        StatusMessage = "Cargando ejercicios...";
 
         var result = await _apiService.GetExercisesAsync();
 
         if (result.IsSuccess && result.Value is not null)
         {
             Exercises = new ObservableCollection<Exercise>(result.Value);
-            await NotificationHelper.ShowToastAsync($"Se cargaron {Exercises.Count} ejercicios.");
+            StatusMessage = $"{Exercises.Count} ejercicios cargados.";
+            await NotificationHelper.ShowToastAsync(StatusMessage);
         }
         else
         {
+            StatusMessage = string.Empty;
             ErrorMessage = result.ErrorMessage ?? "No se pudieron cargar los ejercicios.";
         }
 
         IsBusy = false;
     }
 
- 
     [RelayCommand]
     private async Task GoToDetailAsync(Exercise? exercise)
     {
         if (exercise is null)
         {
-            await Toast.Make("No se pudo abrir el detalle de este ejercicio.").Show();
+            await NotificationHelper.ShowToastAsync("No se pudo abrir el detalle de este ejercicio.");
             return;
         }
 

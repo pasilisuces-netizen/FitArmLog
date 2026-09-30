@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Net.Http;
 using FitArmLog.Models;
 using FitArmLog.Services.Dtos;
 
@@ -16,7 +16,7 @@ public interface IExerciseApiService
 
 public class ExerciseApiService : IExerciseApiService
 {
-    
+    // Fuente: Free Exercise DB (dataset público, sin autenticación).
     private const string ExercisesJsonUrl =
         "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/dist/exercises.json";
 
@@ -26,7 +26,6 @@ public class ExerciseApiService : IExerciseApiService
 
     private readonly HttpClient _http;
 
-    
     public ExerciseApiService(HttpClient http)
     {
         _http = http;
@@ -41,8 +40,15 @@ public class ExerciseApiService : IExerciseApiService
             
             if (!response.IsSuccessStatusCode)
             {
-                return Result<List<Exercise>>.Fail(
-                    $"El servidor respondió con un error ({(int)response.StatusCode}).");
+                var statusCode = (int)response.StatusCode;
+                var mensaje = statusCode switch
+                {
+                    404 => "No se encontró el recurso solicitado (404).",
+                    >= 500 => $"El servidor tuvo un problema interno ({statusCode}). Probá más tarde.",
+                    _ => $"El servidor respondió con un error ({statusCode})."
+                };
+
+                return Result<List<Exercise>>.Fail(mensaje);
             }
 
             var json = await response.Content.ReadAsStringAsync(token);
@@ -70,6 +76,7 @@ public class ExerciseApiService : IExerciseApiService
         }
         catch (TaskCanceledException)
         {
+            
             return Result<List<Exercise>>.Fail(
                 "La operación fue cancelada o excedió el tiempo de espera.");
         }
@@ -80,6 +87,7 @@ public class ExerciseApiService : IExerciseApiService
         }
         catch (HttpRequestException)
         {
+         
             return Result<List<Exercise>>.Fail(
                 "No se pudo conectar con el servicio. Verificá tu conexión e intentá nuevamente.");
         }
