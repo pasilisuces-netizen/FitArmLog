@@ -26,6 +26,10 @@ public static class MauiProgram
         builder.Services.AddSingleton<IExerciseApiService, ExerciseApiService>();
         builder.Services.AddSingleton<INavigationService, NavigationService>();
 
+        builder.Services.AddSingleton<IRoutineRepository>(sp =>
+            new RoutineRepositorySqlite(
+                Path.Combine(FileSystem.AppDataDirectory, "fitarmlog.db3")));
+
         builder.Services.AddTransient<ExerciseListViewModel>();
         builder.Services.AddTransient<ExerciseListPage>();
         builder.Services.AddTransient<ExerciseDetailViewModel>();
