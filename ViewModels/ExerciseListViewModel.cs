@@ -21,8 +21,7 @@ public partial class ExerciseListViewModel : ObservableObject
     [ObservableProperty]
     private string errorMessage = string.Empty;
 
-    // Mensaje de estado (distinto del error): informa qué está pasando
-    // durante la carga, sin ser necesariamente un problema.
+  
     [ObservableProperty]
     private string statusMessage = string.Empty;
 
