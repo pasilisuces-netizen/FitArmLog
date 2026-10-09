@@ -22,7 +22,7 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        builder.Services.AddSingleton<HttpClient>();
+        builder.Services.AddSingleton(sp => new HttpClient { Timeout = TimeSpan.FromSeconds(10) });
         builder.Services.AddSingleton<IExerciseApiService, ExerciseApiService>();
         builder.Services.AddSingleton<INavigationService, NavigationService>();
 
