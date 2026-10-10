@@ -12,6 +12,10 @@
         <ShellContent Title="Rutinas"
                       ContentTemplate="{DataTemplate views:RoutineListPage}"
                       Route="RoutineListPage" />
+
+        <ShellContent Title="Historial"
+                      ContentTemplate="{DataTemplate views:HistoryPage}"
+                      Route="HistoryPage" />
     </TabBar>
 
 </Shell>

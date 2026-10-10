@@ -1,4 +1,4 @@
-﻿using FitArmLog.Views;
+using FitArmLog.Views;
 
 namespace FitArmLog;
 
@@ -11,5 +11,6 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(ExerciseDetailPage), typeof(ExerciseDetailPage));
         Routing.RegisterRoute(nameof(RoutineFormPage), typeof(RoutineFormPage));
         Routing.RegisterRoute(nameof(RoutineDetailPage), typeof(RoutineDetailPage));
+        Routing.RegisterRoute(nameof(WorkoutPage), typeof(WorkoutPage));
     }
 }

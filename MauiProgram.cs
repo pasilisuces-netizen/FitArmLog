@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui;
 using FFImageLoading.Maui;
 using FitArmLog.Services;
 using FitArmLog.ViewModels;
@@ -26,9 +26,9 @@ public static class MauiProgram
         builder.Services.AddSingleton<IExerciseApiService, ExerciseApiService>();
         builder.Services.AddSingleton<INavigationService, NavigationService>();
 
-        builder.Services.AddSingleton<IRoutineRepository>(sp =>
-            new RoutineRepositorySqlite(
-                Path.Combine(FileSystem.AppDataDirectory, "fitarmlog.db3")));
+        var dbPath = Path.Combine(FileSystem.AppDataDirectory, "fitarmlog.db3");
+        builder.Services.AddSingleton<IRoutineRepository>(sp => new RoutineRepositorySqlite(dbPath));
+        builder.Services.AddSingleton<IWorkoutRepository>(sp => new WorkoutRepositorySqlite(dbPath));
 
         builder.Services.AddTransient<ExerciseListViewModel>();
         builder.Services.AddTransient<ExerciseListPage>();
@@ -41,6 +41,11 @@ public static class MauiProgram
         builder.Services.AddTransient<RoutineFormPage>();
         builder.Services.AddTransient<RoutineDetailViewModel>();
         builder.Services.AddTransient<RoutineDetailPage>();
+
+        builder.Services.AddTransient<WorkoutViewModel>();
+        builder.Services.AddTransient<WorkoutPage>();
+        builder.Services.AddTransient<HistoryViewModel>();
+        builder.Services.AddTransient<HistoryPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();
