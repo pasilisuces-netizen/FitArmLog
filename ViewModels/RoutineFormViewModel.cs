@@ -1,7 +1,8 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FitArmLog.Models;
 using FitArmLog.Services;
+using FitArmLog.Validation;
 using System.Collections.ObjectModel;
 
 namespace FitArmLog.ViewModels;
@@ -18,7 +19,6 @@ public partial class RoutineFormViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<SelectableExercise> availableExercises = new();
 
-    
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsNotBusy))]
     private bool isBusy;
@@ -66,20 +66,16 @@ public partial class RoutineFormViewModel : ObservableObject
         ErrorMessage = string.Empty;
         SuccessMessage = string.Empty;
 
-        if (string.IsNullOrWhiteSpace(RoutineName))
-        {
-            ErrorMessage = "Ingresá un nombre para la rutina.";
-            return;
-        }
-
         var selected = AvailableExercises
             .Where(e => e.IsSelected)
             .Select(e => e.Exercise)
             .ToList();
 
-        if (selected.Count == 0)
+        // Validacion centralizada 
+        var validation = AppValidator.ValidateRoutine(RoutineName, selected.Count);
+        if (!validation.IsValid)
         {
-            ErrorMessage = "Seleccioná al menos un ejercicio.";
+            ErrorMessage = validation.FirstError;
             return;
         }
 
@@ -96,7 +92,6 @@ public partial class RoutineFormViewModel : ObservableObject
             SuccessMessage = $"¡Rutina '{routine.Name}' guardada!";
             await NotificationHelper.ShowToastAsync(SuccessMessage);
 
-            
             MainThread.BeginInvokeOnMainThread(async () =>
             {
                 await _navigationService.GoBackAsync();
