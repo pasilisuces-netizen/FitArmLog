@@ -1,7 +1,8 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FitArmLog.Models;
 using FitArmLog.Services;
+using FitArmLog.Views;
 
 namespace FitArmLog.ViewModels;
 
@@ -33,6 +34,15 @@ public partial class RoutineDetailViewModel : ObservableObject, IQueryAttributab
     {
         await NotificationHelper.ShowToastAsync("No se pudo cargar la rutina seleccionada.");
         await _navigationService.GoBackAsync();
+    }
+
+    [RelayCommand]
+    private async Task StartWorkoutAsync()
+    {
+        if (Routine is null) return;
+
+        var parameters = new Dictionary<string, object> { { "Routine", Routine } };
+        await _navigationService.GoToAsync(nameof(WorkoutPage), parameters);
     }
 
     [RelayCommand]

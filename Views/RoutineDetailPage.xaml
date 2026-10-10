@@ -13,6 +13,8 @@
             <Label Text="{Binding Routine.Name}" FontSize="24" FontAttributes="Bold" />
             <Label Text="{Binding Routine.Exercises.Count, StringFormat='{0} ejercicios'}" TextColor="Gray" />
 
+            <Button Text="Iniciar entrenamiento" Command="{Binding StartWorkoutCommand}" />
+
             <CollectionView ItemsSource="{Binding Routine.Exercises}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:Exercise">

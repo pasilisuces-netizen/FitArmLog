@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:FitArmLog.ViewModels"
+             xmlns:models="clr-namespace:FitArmLog.Models"
+             x:Class="FitArmLog.Views.WorkoutPage"
+             x:DataType="vm:WorkoutViewModel"
+             Title="Entrenar">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="10">
+
+            <Label Text="{Binding Routine.Name}" FontSize="24" FontAttributes="Bold" />
+
+            <Label Text="{Binding ErrorMessage}" TextColor="Red"
+                   IsVisible="{Binding HasError}" />
+
+            <Picker Title="Elegí un ejercicio"
+                    ItemsSource="{Binding Routine.Exercises}"
+                    ItemDisplayBinding="{Binding Name, x:DataType=models:Exercise}"
+                    SelectedItem="{Binding SelectedExercise}" />
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                <Entry Grid.Column="0" Placeholder="Repeticiones" Keyboard="Numeric"
+                       Text="{Binding RepsText}" />
+                <Entry Grid.Column="1" Placeholder="Peso (kg)" Keyboard="Numeric"
+                       Text="{Binding WeightText}" />
+            </Grid>
+
+            <Button Text="Agregar serie" Command="{Binding AddSetCommand}" />
+
+            <Label Text="Series registradas" FontAttributes="Bold" Margin="0,10,0,0" />
+
+            <VerticalStackLayout BindableLayout.ItemsSource="{Binding Sets}" Spacing="6">
+                <BindableLayout.EmptyView>
+                    <Label Text="Todavía no cargaste ninguna serie." TextColor="Gray" />
+                </BindableLayout.EmptyView>
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="models:SetEntry">
+                        <Grid ColumnDefinitions="*,Auto" Padding="8">
+                            <Label Grid.Column="0" Text="{Binding Summary}" VerticalOptions="Center" />
+                            <Button Grid.Column="1" Text="Quitar" FontSize="12" Padding="10,2"
+                                    BackgroundColor="IndianRed" TextColor="White"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:WorkoutViewModel}}, Path=RemoveSetCommand}"
+                                    CommandParameter="{Binding .}" />
+                        </Grid>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
+
+            <Editor Placeholder="Notas (opcional)" HeightRequest="90"
+                    Text="{Binding Notes}" AutoSize="TextChanges" />
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+
+            <Button Text="Finalizar y guardar entrenamiento"
+                    Command="{Binding FinishCommand}"
+                    IsEnabled="{Binding IsNotBusy}" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
