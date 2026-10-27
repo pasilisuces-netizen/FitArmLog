@@ -86,5 +86,11 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
+	<ItemGroup>
+		<Compile Remove="FitArmLog.Tests\**" />
+		<EmbeddedResource Remove="FitArmLog.Tests\**" />
+		<None Remove="FitArmLog.Tests\**" />
+		<MauiXaml Remove="FitArmLog.Tests\**" />
+	</ItemGroup>
 
 </Project>
