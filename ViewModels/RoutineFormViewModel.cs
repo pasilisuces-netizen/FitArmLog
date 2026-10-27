@@ -2,7 +2,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FitArmLog.Models;
 using FitArmLog.Services;
-using FitArmLog.Validation;
 using System.Collections.ObjectModel;
 
 namespace FitArmLog.ViewModels;
@@ -10,7 +9,7 @@ namespace FitArmLog.ViewModels;
 public partial class RoutineFormViewModel : ObservableObject
 {
     private readonly IExerciseApiService _apiService;
-    private readonly IRoutineRepository _routineRepository;
+    private readonly IRoutineService _routineService;
     private readonly INavigationService _navigationService;
 
     [ObservableProperty]
@@ -33,11 +32,11 @@ public partial class RoutineFormViewModel : ObservableObject
 
     public RoutineFormViewModel(
         IExerciseApiService apiService,
-        IRoutineRepository routineRepository,
+        IRoutineService routineService,
         INavigationService navigationService)
     {
         _apiService = apiService;
-        _routineRepository = routineRepository;
+        _routineService = routineService;
         _navigationService = navigationService;
     }
 
@@ -71,36 +70,20 @@ public partial class RoutineFormViewModel : ObservableObject
             .Select(e => e.Exercise)
             .ToList();
 
-        // Validacion centralizada 
-        var validation = AppValidator.ValidateRoutine(RoutineName, selected.Count);
-        if (!validation.IsValid)
+        // La validacion y el guardado viven en RoutineService (capa de aplicacion)
+        var result = await _routineService.CreateAsync(RoutineName, selected);
+        if (!result.IsSuccess)
         {
-            ErrorMessage = validation.FirstError;
+            ErrorMessage = result.ErrorMessage ?? "No se pudo guardar la rutina.";
             return;
         }
 
-        try
+        SuccessMessage = $"¡Rutina '{result.Value!.Name}' guardada!";
+        await NotificationHelper.ShowToastAsync(SuccessMessage);
+
+        MainThread.BeginInvokeOnMainThread(async () =>
         {
-            var routine = new Routine
-            {
-                Name = RoutineName.Trim(),
-                Exercises = selected
-            };
-
-            await _routineRepository.AddAsync(routine);
-
-            SuccessMessage = $"¡Rutina '{routine.Name}' guardada!";
-            await NotificationHelper.ShowToastAsync(SuccessMessage);
-
-            MainThread.BeginInvokeOnMainThread(async () =>
-            {
-                await _navigationService.GoBackAsync();
-            });
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = $"No se pudo guardar la rutina: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"[RoutineForm] ERROR: {ex}");
-        }
+            await _navigationService.GoBackAsync();
+        });
     }
 }

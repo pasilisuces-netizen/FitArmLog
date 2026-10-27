@@ -9,7 +9,7 @@ namespace FitArmLog.ViewModels;
 
 public partial class WorkoutViewModel : ObservableObject, IQueryAttributable
 {
-    private readonly IWorkoutRepository _workoutRepository;
+    private readonly IWorkoutService _workoutService;
     private readonly INavigationService _navigationService;
 
     [ObservableProperty]
@@ -40,9 +40,9 @@ public partial class WorkoutViewModel : ObservableObject, IQueryAttributable
 
     public ObservableCollection<SetEntry> Sets { get; } = new();
 
-    public WorkoutViewModel(IWorkoutRepository workoutRepository, INavigationService navigationService)
+    public WorkoutViewModel(IWorkoutService workoutService, INavigationService navigationService)
     {
-        _workoutRepository = workoutRepository;
+        _workoutService = workoutService;
         _navigationService = navigationService;
     }
 
@@ -126,38 +126,23 @@ public partial class WorkoutViewModel : ObservableObject, IQueryAttributable
     private async Task FinishAsync()
     {
         ErrorMessage = string.Empty;
-
-        var validation = AppValidator.ValidateSession(Sets, Notes);
-        if (!validation.IsValid)
-        {
-            ErrorMessage = validation.FirstError;
-            return;
-        }
-
         IsBusy = true;
         try
         {
-            var session = new WorkoutSession
+            // La validacion y el guardado viven en WorkoutService (capa de aplicacion)
+            var result = await _workoutService.SaveAsync(Routine, Sets.ToList(), Notes);
+            if (!result.IsSuccess)
             {
-                RoutineId = Routine?.Id ?? 0,
-                RoutineName = Routine?.Name ?? string.Empty,
-                Date = DateTime.Now,
-                Sets = Sets.ToList(),
-                Notes = Notes.Trim()
-            };
+                ErrorMessage = result.ErrorMessage ?? "No se pudo guardar el entrenamiento.";
+                return;
+            }
 
-            await _workoutRepository.AddAsync(session);
             await NotificationHelper.ShowToastAsync("¡Entrenamiento guardado! Lo ves en Historial.");
 
             MainThread.BeginInvokeOnMainThread(async () =>
             {
                 await _navigationService.GoBackAsync();
             });
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = $"No se pudo guardar el entrenamiento: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"[Workout] ERROR: {ex}");
         }
         finally
         {
