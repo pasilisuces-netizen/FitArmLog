@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>FitArmLog.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageReference Include="Moq" Version="4.20.72" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.11.285" />
+    <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.11" />
+  </ItemGroup>
+
+  <!--
+    El proyecto de la app es .NET MAUI (Android/iOS/Windows) y no se puede referenciar
+    desde un proyecto net9.0 comun. Por eso "vinculamos" (link) solo los archivos que NO
+    dependen de MAUI: modelos, validaciones, entidades, repositorios y servicios.
+    Los archivos no se copian: se compilan desde su ubicacion original.
+  -->
+  <ItemGroup>
+    <Compile Include="..\Models\*.cs" LinkBase="App\Models" />
+    <Compile Include="..\Data\*.cs" LinkBase="App\Data" />
+    <Compile Include="..\Validation\*.cs" LinkBase="App\Validation" />
+    <Compile Include="..\Services\Dtos\*.cs" LinkBase="App\Services\Dtos" />
+    <Compile Include="..\Services\Result.cs" LinkBase="App\Services" />
+    <Compile Include="..\Services\IRoutineRepository.cs" LinkBase="App\Services" />
+    <Compile Include="..\Services\IWorkoutRepository.cs" LinkBase="App\Services" />
+    <Compile Include="..\Services\RoutineRepositorySqlite.cs" LinkBase="App\Services" />
+    <Compile Include="..\Services\WorkoutRepositorySqlite.cs" LinkBase="App\Services" />
+    <Compile Include="..\Services\RoutineService.cs" LinkBase="App\Services" />
+    <Compile Include="..\Services\WorkoutService.cs" LinkBase="App\Services" />
+    <Compile Include="..\Services\ExerciseApiService.cs" LinkBase="App\Services" />
+  </ItemGroup>
+
+</Project>
