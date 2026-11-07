@@ -17,6 +17,11 @@ public class WorkoutSessionEntity
 
     public string Notes { get; set; } = string.Empty;
 
+    // Datos de sensores (opcionales). SQLite agrega estas columnas solo si la tabla ya existia.
+    public string? PhotoPath { get; set; }
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
+
     // Las series se guardan como JSON, igual que los ejercicios de las rutinas
     public string SetsJson { get; set; } = "[]";
 }

@@ -63,6 +63,9 @@ public class WorkoutRepositorySqlite : IWorkoutRepository
         RoutineName = e.RoutineName,
         Date = e.Date,
         Notes = e.Notes,
+        PhotoPath = e.PhotoPath,
+        Latitude = e.Latitude,
+        Longitude = e.Longitude,
         Sets = JsonSerializer.Deserialize<List<SetEntry>>(e.SetsJson) ?? new()
     };
 
@@ -73,6 +76,9 @@ public class WorkoutRepositorySqlite : IWorkoutRepository
         RoutineName = s.RoutineName,
         Date = s.Date,
         Notes = s.Notes,
+        PhotoPath = s.PhotoPath,
+        Latitude = s.Latitude,
+        Longitude = s.Longitude,
         SetsJson = JsonSerializer.Serialize(s.Sets)
     };
 }
