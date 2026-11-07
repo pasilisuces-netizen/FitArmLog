@@ -7,49 +7,54 @@
              x:DataType="vm:RoutineListViewModel"
              Title="Mis rutinas">
 
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="+" Command="{Binding GoToCreateCommand}" />
-    </ContentPage.ToolbarItems>
+    <Grid>
+        <RefreshView IsRefreshing="{Binding IsBusy}" Command="{Binding LoadRoutinesCommand}">
+            <CollectionView ItemsSource="{Binding Routines}">
 
-    <RefreshView IsRefreshing="{Binding IsBusy}" Command="{Binding LoadRoutinesCommand}">
-        <CollectionView ItemsSource="{Binding Routines}">
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="30">
+                        <Label Text="Todavía no creaste ninguna rutina." FontSize="16" HorizontalTextAlignment="Center" />
+                        <Label Text="Tocá el botón + para crear la primera." FontSize="13" TextColor="Gray" HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
 
-            <CollectionView.EmptyView>
-                <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="30">
-                    <Label Text="Todavía no creaste ninguna rutina." FontSize="16" HorizontalTextAlignment="Center" />
-                    <Label Text="Tocá el + de arriba para crear la primera." FontSize="13" TextColor="Gray" HorizontalTextAlignment="Center" />
-                </VerticalStackLayout>
-            </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Routine">
 
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:Routine">
-                   
-                    <Grid Padding="12" Margin="10,6" ColumnDefinitions="*,Auto"
-                          BackgroundColor="{AppThemeBinding Light=White, Dark=#1e1e1e}">
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:RoutineListViewModel}}, Path=GoToDetailCommand}"
-                                CommandParameter="{Binding .}" />
-                        </Grid.GestureRecognizers>
+                        <Grid Padding="12" Margin="10,6" ColumnDefinitions="*,Auto"
+                              BackgroundColor="{AppThemeBinding Light=White, Dark=#1e1e1e}">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:RoutineListViewModel}}, Path=GoToDetailCommand}"
+                                    CommandParameter="{Binding .}" />
+                            </Grid.GestureRecognizers>
 
-                        <VerticalStackLayout Grid.Column="0" Spacing="4" VerticalOptions="Center">
-                            <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
-                            <Label Text="{Binding Exercises.Count, StringFormat='{0} ejercicios'}"
-                                   FontSize="13" TextColor="Gray" />
-                        </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="0" Spacing="4" VerticalOptions="Center">
+                                <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
+                                <Label Text="{Binding Exercises.Count, StringFormat='{0} ejercicios'}"
+                                       FontSize="13" TextColor="Gray" />
+                            </VerticalStackLayout>
 
-                        <Button Grid.Column="1"
-                                Text="Eliminar"
-                                TextColor="White"
-                                BackgroundColor="IndianRed"
-                                FontSize="12"
-                                Padding="10,4"
-                                VerticalOptions="Center"
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:RoutineListViewModel}}, Path=DeleteRoutineCommand}"
-                                CommandParameter="{Binding .}" />
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </RefreshView>
+                            <Button Grid.Column="1"
+                                    Text="Eliminar"
+                                    TextColor="White"
+                                    BackgroundColor="IndianRed"
+                                    FontSize="12"
+                                    Padding="10,4"
+                                    VerticalOptions="Center"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:RoutineListViewModel}}, Path=DeleteRoutineCommand}"
+                                    CommandParameter="{Binding .}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+
+        <!-- Boton flotante grande para crear una rutina -->
+        <Button Text="+" FontSize="34" Padding="0,0,0,4"
+                WidthRequest="64" HeightRequest="64" CornerRadius="32"
+                HorizontalOptions="End" VerticalOptions="End" Margin="0,0,20,24"
+                Command="{Binding GoToCreateCommand}"
+                SemanticProperties.Description="Crear una rutina nueva" />
+    </Grid>
 </ContentPage>

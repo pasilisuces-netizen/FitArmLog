@@ -33,6 +33,10 @@
                                 <Label Text="{Binding TotalSets, StringFormat='{0} series'}" FontSize="13" />
                                 <Label Text="{Binding TotalVolume, StringFormat='Volumen total: {0:N0} kg'}" FontSize="13" />
                                 <Label Text="{Binding Notes}" FontSize="12" TextColor="Gray" />
+                                <Label Text="{Binding LocationText}" FontSize="12" TextColor="Gray"
+                                       IsVisible="{Binding HasLocation}" />
+                                <Image Source="{Binding PhotoPath}" HeightRequest="140" Aspect="AspectFill"
+                                       IsVisible="{Binding HasPhoto}" />
                             </VerticalStackLayout>
 
                             <Button Grid.Column="1" Text="Eliminar" TextColor="White"

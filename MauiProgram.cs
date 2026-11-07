@@ -1,6 +1,7 @@
 using CommunityToolkit.Maui;
 using FFImageLoading.Maui;
 using FitArmLog.Services;
+using FitArmLog.Services.Device;
 using FitArmLog.ViewModels;
 using FitArmLog.Views;
 using Microsoft.Extensions.Logging;
@@ -35,6 +36,15 @@ public static class MauiProgram
         builder.Services.AddSingleton<IRoutineService, RoutineService>();
         builder.Services.AddSingleton<IWorkoutService, WorkoutService>();
 
+        // Preferencias del usuario (Ajustes)
+        builder.Services.AddSingleton<ISettingsService, SettingsService>();
+
+        // Sensores del dispositivo (camara, GPS, vibracion, acelerometro)
+        builder.Services.AddSingleton<IPhotoService, PhotoService>();
+        builder.Services.AddSingleton<ILocationService, LocationService>();
+        builder.Services.AddSingleton<IHapticService, HapticService>();
+        builder.Services.AddSingleton<IShakeDetector, ShakeDetector>();
+
         builder.Services.AddTransient<ExerciseListViewModel>();
         builder.Services.AddTransient<ExerciseListPage>();
         builder.Services.AddTransient<ExerciseDetailViewModel>();
@@ -51,6 +61,8 @@ public static class MauiProgram
         builder.Services.AddTransient<WorkoutPage>();
         builder.Services.AddTransient<HistoryViewModel>();
         builder.Services.AddTransient<HistoryPage>();
+        builder.Services.AddTransient<SettingsViewModel>();
+        builder.Services.AddTransient<SettingsPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();

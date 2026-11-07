@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:FitArmLog.ViewModels"
+             x:Class="FitArmLog.Views.SettingsPage"
+             x:DataType="vm:SettingsViewModel"
+             Title="Ajustes">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16">
+
+            <Label Text="Sensores y respuestas" FontSize="18" FontAttributes="Bold" />
+
+            <Grid ColumnDefinitions="*,Auto">
+                <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                    <Label Text="Vibración" FontSize="16" />
+                    <Label Text="Vibra al agregar una serie y al guardar el entrenamiento."
+                           FontSize="12" TextColor="Gray" />
+                </VerticalStackLayout>
+                <Switch Grid.Column="1" VerticalOptions="Center" IsToggled="{Binding VibrationEnabled}" />
+            </Grid>
+
+            <Grid ColumnDefinitions="*,Auto">
+                <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                    <Label Text="Sacudir para deshacer" FontSize="16" />
+                    <Label Text="Sacudir el celular quita la última serie cargada."
+                           FontSize="12" TextColor="Gray" />
+                </VerticalStackLayout>
+                <Switch Grid.Column="1" VerticalOptions="Center" IsToggled="{Binding ShakeToUndoEnabled}" />
+            </Grid>
+
+            <Grid ColumnDefinitions="*,Auto">
+                <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                    <Label Text="Guardar ubicación por defecto" FontSize="16" />
+                    <Label Text="Deja activado el GPS al iniciar un entrenamiento."
+                           FontSize="12" TextColor="Gray" />
+                </VerticalStackLayout>
+                <Switch Grid.Column="1" VerticalOptions="Center" IsToggled="{Binding SaveLocationByDefault}" />
+            </Grid>
+
+            <Button Text="Probar vibración" Command="{Binding TestVibrationCommand}" />
+
+            <Label Text="{Binding InfoMessage}" TextColor="Gray" IsVisible="{Binding HasInfo}" />
+
+            <BoxView HeightRequest="1" Color="LightGray" />
+
+            <Label Text="Acerca de" FontSize="18" FontAttributes="Bold" />
+            <Label Text="{Binding VersionText}" TextColor="Gray" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

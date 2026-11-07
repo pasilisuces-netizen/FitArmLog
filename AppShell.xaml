@@ -5,17 +5,21 @@
        x:Class="FitArmLog.AppShell">
 
     <TabBar>
-        <ShellContent Title="Ejercicios"
+        <ShellContent Title="Ejercicios" Icon="dumbbell.png"
                       ContentTemplate="{DataTemplate views:ExerciseListPage}"
                       Route="ExerciseListPage" />
 
-        <ShellContent Title="Rutinas"
+        <ShellContent Title="Rutinas" Icon="list.png"
                       ContentTemplate="{DataTemplate views:RoutineListPage}"
                       Route="RoutineListPage" />
 
-        <ShellContent Title="Historial"
+        <ShellContent Title="Historial" Icon="clock.png"
                       ContentTemplate="{DataTemplate views:HistoryPage}"
                       Route="HistoryPage" />
+
+        <ShellContent Title="Ajustes" Icon="gear.png"
+                      ContentTemplate="{DataTemplate views:SettingsPage}"
+                      Route="SettingsPage" />
     </TabBar>
 
 </Shell>
