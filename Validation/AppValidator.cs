@@ -3,7 +3,8 @@ using FitArmLog.Models;
 
 namespace FitArmLog.Validation;
 
-// Todas las reglas de validacion de la app
+// Todas las reglas de validacion de la app en un solo lugar.
+// Es estatica y no depende de la UI, asi se puede testear con xUnit.
 public static class AppValidator
 {
     public const int MaxRoutineNameLength = 100;
@@ -60,6 +61,31 @@ public static class AppValidator
         return result;
     }
 
+    // Ubicacion opcional: o vienen las dos coordenadas o ninguna, y dentro de rango
+    public static ValidationResult ValidateLocation(double? latitude, double? longitude)
+    {
+        var result = new ValidationResult();
+
+        if (latitude is null && longitude is null)
+            return result;
+
+        if (latitude is null || longitude is null)
+        {
+            result.Add("La ubicación está incompleta.");
+            return result;
+        }
+
+        // Se escribe asi (y no "lat < -90 || lat > 90") para que NaN tambien sea invalido
+        if (!(latitude >= -90 && latitude <= 90))
+            result.Add("La latitud debe estar entre -90 y 90.");
+
+        if (!(longitude >= -180 && longitude <= 180))
+            result.Add("La longitud debe estar entre -180 y 180.");
+
+        return result;
+    }
+
+    // Acepta "42.5" y "42,5" (en Argentina se escribe con coma)
     public static bool TryParseWeight(string? text, out double weight)
     {
         weight = 0;

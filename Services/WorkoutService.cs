@@ -6,7 +6,9 @@ namespace FitArmLog.Services;
 // Capa de aplicacion: reglas de negocio para guardar un entrenamiento.
 public interface IWorkoutService
 {
-    Task<Result<WorkoutSession>> SaveAsync(Routine? routine, IReadOnlyCollection<SetEntry> sets, string? notes);
+    Task<Result<WorkoutSession>> SaveAsync(
+        Routine? routine, IReadOnlyCollection<SetEntry> sets, string? notes,
+        string? photoPath = null, double? latitude = null, double? longitude = null);
 }
 
 public class WorkoutService : IWorkoutService
@@ -19,7 +21,8 @@ public class WorkoutService : IWorkoutService
     }
 
     public async Task<Result<WorkoutSession>> SaveAsync(
-        Routine? routine, IReadOnlyCollection<SetEntry> sets, string? notes)
+        Routine? routine, IReadOnlyCollection<SetEntry> sets, string? notes,
+        string? photoPath = null, double? latitude = null, double? longitude = null)
     {
         if (routine is null)
             return Result<WorkoutSession>.Fail("No hay una rutina seleccionada para entrenar.");
@@ -27,6 +30,10 @@ public class WorkoutService : IWorkoutService
         var validation = AppValidator.ValidateSession(sets, notes);
         if (!validation.IsValid)
             return Result<WorkoutSession>.Fail(validation.FirstError);
+
+        var locationValidation = AppValidator.ValidateLocation(latitude, longitude);
+        if (!locationValidation.IsValid)
+            return Result<WorkoutSession>.Fail(locationValidation.FirstError);
 
         try
         {
@@ -36,7 +43,10 @@ public class WorkoutService : IWorkoutService
                 RoutineName = routine.Name,
                 Date = DateTime.Now,
                 Sets = sets.ToList(),
-                Notes = notes?.Trim() ?? string.Empty
+                Notes = notes?.Trim() ?? string.Empty,
+                PhotoPath = string.IsNullOrWhiteSpace(photoPath) ? null : photoPath,
+                Latitude = latitude,
+                Longitude = longitude
             };
 
             await _repository.AddAsync(session);
