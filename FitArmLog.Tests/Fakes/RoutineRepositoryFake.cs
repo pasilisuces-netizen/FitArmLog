@@ -10,10 +10,17 @@ public class RoutineRepositoryFake : IRoutineRepository
     private readonly List<Routine> _routines = new();
     private int _nextId = 1;
 
-    // Permite simular un fallo de la base de datos
+    // Permiten simular fallos de la base de datos
     public bool ThrowOnAdd { get; set; }
+    public bool ThrowOnGet { get; set; }
+    public bool ThrowOnDelete { get; set; }
 
-    public Task<List<Routine>> GetAllAsync() => Task.FromResult(_routines.ToList());
+    public Task<List<Routine>> GetAllAsync()
+    {
+        if (ThrowOnGet)
+            throw new InvalidOperationException("fallo simulado de la base de datos");
+        return Task.FromResult(_routines.ToList());
+    }
 
     public Task<Routine?> GetByIdAsync(int id) =>
         Task.FromResult(_routines.FirstOrDefault(r => r.Id == id));
@@ -30,6 +37,8 @@ public class RoutineRepositoryFake : IRoutineRepository
 
     public Task DeleteAsync(int id)
     {
+        if (ThrowOnDelete)
+            throw new InvalidOperationException("fallo simulado de la base de datos");
         _routines.RemoveAll(r => r.Id == id);
         return Task.CompletedTask;
     }

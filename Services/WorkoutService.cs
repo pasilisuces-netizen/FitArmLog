@@ -9,6 +9,8 @@ public interface IWorkoutService
     Task<Result<WorkoutSession>> SaveAsync(
         Routine? routine, IReadOnlyCollection<SetEntry> sets, string? notes,
         string? photoPath = null, double? latitude = null, double? longitude = null);
+    Task<Result<List<WorkoutSession>>> GetAllAsync();
+    Task<Result<bool>> DeleteAsync(int id);
 }
 
 public class WorkoutService : IWorkoutService
@@ -55,6 +57,31 @@ public class WorkoutService : IWorkoutService
         catch (Exception ex)
         {
             return Result<WorkoutSession>.Fail($"No se pudo guardar el entrenamiento: {ex.Message}");
+        }
+    }
+
+    public async Task<Result<List<WorkoutSession>>> GetAllAsync()
+    {
+        try
+        {
+            return Result<List<WorkoutSession>>.Success(await _repository.GetAllAsync());
+        }
+        catch (Exception ex)
+        {
+            return Result<List<WorkoutSession>>.Fail($"No se pudo cargar el historial: {ex.Message}");
+        }
+    }
+
+    public async Task<Result<bool>> DeleteAsync(int id)
+    {
+        try
+        {
+            await _repository.DeleteAsync(id);
+            return Result<bool>.Success(true);
+        }
+        catch (Exception ex)
+        {
+            return Result<bool>.Fail($"No se pudo eliminar el entrenamiento: {ex.Message}");
         }
     }
 }

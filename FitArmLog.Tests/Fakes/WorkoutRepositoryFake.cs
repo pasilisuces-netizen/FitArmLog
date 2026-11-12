@@ -9,9 +9,15 @@ public class WorkoutRepositoryFake : IWorkoutRepository
     private int _nextId = 1;
 
     public bool ThrowOnAdd { get; set; }
+    public bool ThrowOnGet { get; set; }
+    public bool ThrowOnDelete { get; set; }
 
-    public Task<List<WorkoutSession>> GetAllAsync() =>
-        Task.FromResult(_sessions.OrderByDescending(s => s.Date).ToList());
+    public Task<List<WorkoutSession>> GetAllAsync()
+    {
+        if (ThrowOnGet)
+            throw new InvalidOperationException("fallo simulado de la base de datos");
+        return Task.FromResult(_sessions.OrderByDescending(s => s.Date).ToList());
+    }
 
     public Task AddAsync(WorkoutSession session)
     {
@@ -25,6 +31,8 @@ public class WorkoutRepositoryFake : IWorkoutRepository
 
     public Task DeleteAsync(int id)
     {
+        if (ThrowOnDelete)
+            throw new InvalidOperationException("fallo simulado de la base de datos");
         _sessions.RemoveAll(s => s.Id == id);
         return Task.CompletedTask;
     }
