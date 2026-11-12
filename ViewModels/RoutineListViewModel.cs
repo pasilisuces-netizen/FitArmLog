@@ -1,16 +1,16 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FitArmLog.Models;
 using FitArmLog.Services;
 using FitArmLog.Views;
-using Microsoft.Maui.Controls;
 using System.Collections.ObjectModel;
 
 namespace FitArmLog.ViewModels;
 
 public partial class RoutineListViewModel : ObservableObject
 {
-    private readonly IRoutineRepository _routineRepository;
+    // La VM solo conoce el servicio (capa de aplicacion), nunca el repositorio.
+    private readonly IRoutineService _routineService;
     private readonly INavigationService _navigationService;
 
     [ObservableProperty]
@@ -19,9 +19,12 @@ public partial class RoutineListViewModel : ObservableObject
     [ObservableProperty]
     private bool isBusy;
 
-    public RoutineListViewModel(IRoutineRepository routineRepository, INavigationService navigationService)
+    [ObservableProperty]
+    private string errorMessage = string.Empty;
+
+    public RoutineListViewModel(IRoutineService routineService, INavigationService navigationService)
     {
-        _routineRepository = routineRepository;
+        _routineService = routineService;
         _navigationService = navigationService;
     }
 
@@ -29,9 +32,19 @@ public partial class RoutineListViewModel : ObservableObject
     private async Task LoadRoutinesAsync()
     {
         IsBusy = true;
-        var list = await _routineRepository.GetAllAsync();
-        Routines = new ObservableCollection<Routine>(list);
-        IsBusy = false;
+        ErrorMessage = string.Empty;
+        try
+        {
+            var result = await _routineService.GetAllAsync();
+            if (result.IsSuccess)
+                Routines = new ObservableCollection<Routine>(result.Value!);
+            else
+                ErrorMessage = result.ErrorMessage ?? "No se pudieron cargar las rutinas.";
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     [RelayCommand]
@@ -58,7 +71,14 @@ public partial class RoutineListViewModel : ObservableObject
     {
         if (routine is null) return;
 
-        await _routineRepository.DeleteAsync(routine.Id);
+        var result = await _routineService.DeleteAsync(routine.Id);
+        if (!result.IsSuccess)
+        {
+            ErrorMessage = result.ErrorMessage ?? "No se pudo eliminar la rutina.";
+            await NotificationHelper.ShowToastAsync(ErrorMessage);
+            return;
+        }
+
         await LoadRoutinesAsync();
         await NotificationHelper.ShowToastAsync($"Rutina '{routine.Name}' eliminada.");
     }

@@ -8,7 +8,8 @@ namespace FitArmLog.ViewModels;
 
 public partial class HistoryViewModel : ObservableObject
 {
-    private readonly IWorkoutRepository _workoutRepository;
+    // La VM solo conoce el servicio (capa de aplicacion), nunca el repositorio.
+    private readonly IWorkoutService _workoutService;
 
     [ObservableProperty]
     private ObservableCollection<WorkoutSession> sessions = new();
@@ -19,9 +20,9 @@ public partial class HistoryViewModel : ObservableObject
     [ObservableProperty]
     private string errorMessage = string.Empty;
 
-    public HistoryViewModel(IWorkoutRepository workoutRepository)
+    public HistoryViewModel(IWorkoutService workoutService)
     {
-        _workoutRepository = workoutRepository;
+        _workoutService = workoutService;
     }
 
     [RelayCommand]
@@ -31,13 +32,11 @@ public partial class HistoryViewModel : ObservableObject
         ErrorMessage = string.Empty;
         try
         {
-            var list = await _workoutRepository.GetAllAsync();
-            Sessions = new ObservableCollection<WorkoutSession>(list);
-        }
-        catch (Exception ex)
-        {
-            ErrorMessage = $"No se pudo cargar el historial: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"[History] ERROR: {ex}");
+            var result = await _workoutService.GetAllAsync();
+            if (result.IsSuccess)
+                Sessions = new ObservableCollection<WorkoutSession>(result.Value!);
+            else
+                ErrorMessage = result.ErrorMessage ?? "No se pudo cargar el historial.";
         }
         finally
         {
@@ -50,15 +49,14 @@ public partial class HistoryViewModel : ObservableObject
     {
         if (session is null) return;
 
-        try
+        var result = await _workoutService.DeleteAsync(session.Id);
+        if (!result.IsSuccess)
         {
-            await _workoutRepository.DeleteAsync(session.Id);
-            await LoadSessionsAsync();
-            await NotificationHelper.ShowToastAsync("Entrenamiento eliminado.");
+            ErrorMessage = result.ErrorMessage ?? "No se pudo eliminar el entrenamiento.";
+            return;
         }
-        catch (Exception ex)
-        {
-            ErrorMessage = $"No se pudo eliminar: {ex.Message}";
-        }
+
+        await LoadSessionsAsync();
+        await NotificationHelper.ShowToastAsync("Entrenamiento eliminado.");
     }
 }
