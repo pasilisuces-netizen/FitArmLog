@@ -65,6 +65,7 @@ public class ExerciseApiService : IExerciseApiService
                 .Take(40)
                 .Select(d => new Exercise
                 {
+                    Id = d.Id,
                     Name = d.Name,
                     MuscleGroup = d.PrimaryMuscles.FirstOrDefault() ?? "General",
                     Description = d.Instructions.FirstOrDefault() ?? "Sin descripción disponible.",
