@@ -28,5 +28,11 @@
 	</array>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
+	<key>NSCameraUsageDescription</key>
+	<string>FitArmLog usa la camara para tomar una foto de tu entrenamiento.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>FitArmLog usa tu ubicacion, solo si lo activas, para registrar donde entrenaste.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>FitArmLog usa el acelerometro para detectar cuando sacudis el telefono y agregar una serie.</string>
 </dict>
 </plist>
